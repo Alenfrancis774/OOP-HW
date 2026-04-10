@@ -1,0 +1,37 @@
+public class Main {
+
+    public static void main(String[] args) {
+
+        Bank bank = new Bank("JVMS", "RIXS");
+
+        while (true) {
+            showMenu();
+
+            int choice = InputUtils.getNumberInputWithinRange("Your Choice: ", 1, 7);
+
+            switch (choice) {
+                case 1 -> bank.addCustomer();
+                case 2 -> bank.createAccountForCustomer();
+                case 3 -> bank.processDeposit();
+                case 4 -> bank.processWithdrawal();
+                case 5 -> bank.showCustomerBalance();
+                case 6 -> bank.showAllTransactions();
+                case 7 -> {
+                    System.out.println("Goodbye!");
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void showMenu() {
+        System.out.println("\n-- Welcome to Java Bank ---");
+        System.out.println("1. Create a Customer");
+        System.out.println("2. Open Account");
+        System.out.println("3. Deposit Money");
+        System.out.println("4. Withdraw Money");
+        System.out.println("5. View Account Balance");
+        System.out.println("6. Show All Bank Transactions");
+        System.out.println("7. Exit");
+    }
+}
