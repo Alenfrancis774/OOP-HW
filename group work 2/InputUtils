@@ -1,0 +1,51 @@
+import java.util.Scanner;
+
+public class InputUtils {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static String getTextInput(String message) {
+        while (true) {
+            System.out.print(message);
+            String input = scanner.nextLine().trim();
+
+            if (!input.isEmpty()) return input;
+
+            System.out.println("Error: Input cannot be empty.");
+        }
+    }
+
+    public static double getDoubleInput(String message) {
+        while (true) {
+            System.out.print(message);
+
+            if (scanner.hasNextDouble()) {
+                double value = scanner.nextDouble();
+                scanner.nextLine();
+                return value;
+            } else {
+                System.out.println("Error: Please enter a valid decimal number.");
+                scanner.next();
+            }
+        }
+    }
+
+    public static int getNumberInputWithinRange(String message, int low, int high) {
+        while (true) {
+            System.out.print(message);
+
+            if (scanner.hasNextInt()) {
+                int value = scanner.nextInt();
+
+                if (value >= low && value <= high) {
+                    scanner.nextLine();
+                    return value;
+                }
+            } else {
+                scanner.next();
+            }
+
+            System.out.println("Error: Please enter a number between " + low + " and " + high);
+        }
+    }
+}
