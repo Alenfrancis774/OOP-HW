@@ -1,0 +1,142 @@
+import java.util.*;
+
+public class Bank {
+
+    private String bankCode;
+    private String branchCode;
+    private Map<Integer, Customer> customers;
+    private List<Transaction> transactions;
+
+    private static int customerCounter;
+    private static int accountCounter;
+
+    static {
+        customerCounter = 1000;
+        accountCounter = 5000;
+    }
+
+    public Bank(String bankCode, String branchCode) {
+        this.bankCode = bankCode;
+        this.branchCode = branchCode;
+        customers = new HashMap<>();
+        transactions = new ArrayList<>();
+    }
+
+    public void addCustomer() {
+        String name = InputUtils.getTextInput("Enter Customer Name: ");
+        Customer customer = new Customer(name, customerCounter);
+        customers.put(customerCounter, customer);
+
+        System.out.println("Customer Created! Your ID: " + customerCounter);
+        customerCounter++;
+    }
+
+    private String generateAccountNumber() {
+        return bankCode + "-" + branchCode + "-" + (accountCounter++);
+    }
+
+    private Customer findCustomer(int id) {
+        return customers.get(id);
+    }
+
+    public void createAccountForCustomer() {
+        int id = InputUtils.getNumberInputWithinRange("Enter Customer ID: ", 1000, 9999);
+        Customer customer = findCustomer(id);
+
+        if (customer == null) {
+            System.out.println("Customer not found!");
+            return;
+        }
+
+        int choice = InputUtils.getNumberInputWithinRange(
+                "1. Savings\n2. Checking\nChoose: ", 1, 2);
+
+        String accNum = generateAccountNumber();
+        Account acc;
+
+        if (choice == 1) {
+            acc = new SavingsAccount(accNum);
+        } else {
+            acc = new CheckingAccount(accNum);
+        }
+
+        customer.addAccount(acc);
+        System.out.println("Account Created! Account Number: " + accNum);
+    }
+
+    public void processDeposit() {
+        int id = InputUtils.getNumberInputWithinRange("Enter Customer ID: ", 1000, 9999);
+        Customer customer = findCustomer(id);
+
+        if (customer == null) {
+            System.out.println("Customer not found!");
+            return;
+        }
+
+        String accNum = InputUtils.getTextInput("Enter Account Number: ");
+        Account acc = customer.getAccount(accNum);
+
+        if (acc == null) {
+            System.out.println("Account not found!");
+            return;
+        }
+
+        double amount = InputUtils.getDoubleInput("Enter deposit amount: ");
+
+        if (acc.deposit(amount)) {
+            transactions.add(new Transaction(TransactionType.DEPOSIT, amount, customer, acc));
+        }
+    }
+
+    public void processWithdrawal() {
+        int id = InputUtils.getNumberInputWithinRange("Enter Customer ID: ", 1000, 9999);
+        Customer customer = findCustomer(id);
+
+        if (customer == null) {
+            System.out.println("Customer not found!");
+            return;
+        }
+
+        String accNum = InputUtils.getTextInput("Enter Account Number: ");
+        Account acc = customer.getAccount(accNum);
+
+        if (acc == null) {
+            System.out.println("Account not found!");
+            return;
+        }
+
+        double amount = InputUtils.getDoubleInput("Enter withdrawal amount: ");
+
+        if (acc.withdraw(amount)) {
+            transactions.add(new Transaction(TransactionType.WITHDRAW, amount, customer, acc));
+        }
+    }
+
+    public void showCustomerBalance() {
+        int id = InputUtils.getNumberInputWithinRange("Enter Customer ID: ", 1000, 9999);
+        Customer customer = findCustomer(id);
+
+        if (customer == null) {
+            System.out.println("Customer not found!");
+            return;
+        }
+
+        customer.displayAccounts();
+
+        String accNum = InputUtils.getTextInput("Enter Account Number: ");
+        Account acc = customer.getAccount(accNum);
+
+        if (acc != null) {
+            System.out.println("Your current balance is: $" + acc.getBalance());
+        } else {
+            System.out.println("Account not found!");
+        }
+    }
+
+    public void showAllTransactions() {
+        System.out.println("-----------All Bank Transactions-------------");
+        for (Transaction t : transactions) {
+            t.showTransactionInfo();
+        }
+    }
+}
