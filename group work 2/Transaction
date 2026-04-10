@@ -1,0 +1,37 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
+public class Transaction {
+
+    private UUID transactionId;
+    private TransactionType transactionType;
+    private double transactionAmount;
+    private LocalDateTime transactionTimeAndDate;
+    private Account account;
+    private Customer customer;
+
+    private static final DateTimeFormatter CUSTOM_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public Transaction(TransactionType transactionType, double transactionAmount,
+                       Customer customer, Account account) {
+
+        this.transactionId = UUID.randomUUID();
+        this.transactionType = transactionType;
+        this.transactionAmount = transactionAmount;
+        this.transactionTimeAndDate = LocalDateTime.now();
+        this.account = account;
+        this.customer = customer;
+    }
+
+    public void showTransactionInfo() {
+        System.out.println("Transaction ID: " + transactionId);
+        System.out.println("Type: " + transactionType);
+        System.out.println("Amount: $" + transactionAmount);
+        System.out.println("Account: " + account.getAccountNumber());
+        System.out.println("Customer: " + customer.getName());
+        System.out.println("Date: " + transactionTimeAndDate.format(CUSTOM_FORMATTER));
+        System.out.println("----------------------------------------");
+    }
+}
